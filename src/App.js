@@ -1,24 +1,24 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import 'antd/dist/antd.css'; 
+import { Switch, Route, Redirect } from 'react-router-dom' 
+import LogIn from './pages/LogIn';
+import Tutor from './pages/Tutor';
+import Student from './pages/Student';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div id='header'>Tutuatua</div>
+      <div id='content'>
+        <Switch>
+          <Route path='/login' component={LogIn} />         
+          <Route exact path='/tutor' component={Tutor} />
+          <Route exact path='/student' component={Student} />
+          <Redirect to='login' />
+        </Switch>
+      </div>    
+      <div id='footer'>footer</div>  
     </div>
   );
 }

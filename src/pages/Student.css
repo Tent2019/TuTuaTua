@@ -1,0 +1,39 @@
+#container-student{
+    display: grid;
+    grid-template-columns: 35% 65%;
+}
+
+#student-profile{
+    border: 1px solid;
+    height: 540px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;    
+}
+.student-input {
+    border: 0px solid;
+}
+.student-input .ant-input{
+    border: 0px solid;
+}
+
+#search-tutor{
+    border: 1px solid;
+    padding: 10px;
+    height: 540px;
+}
+#search-inputs{
+    border: 0px solid;
+    display: flex;
+    justify-content: space-around;
+    padding: 0px 10px;
+}
+#search-input{
+    width: 47%;
+}
+
+@media only screen and (max-width: 800px) {
+    #container-student{
+        grid-template-columns: 100%;
+    }   
+}

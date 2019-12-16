@@ -1,0 +1,46 @@
+#container-form{
+    border: 0px solid; 
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#form {
+    border: 0px solid;
+    padding: 20px 40px;
+}
+
+#form > .ant-form-item:nth-child(4){
+    border: 0px solid;
+    margin-bottom: 0px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.login-input{
+    width: 90%;
+    margin-left: 10px;
+}
+
+.ant-select-selection--single{
+    width: 90%;  
+    margin-left: 10px;  
+}
+
+.ant-btn-primary{
+    width: 90px;
+}
+
+@media only screen and (max-width: 600px) {    
+    .login-input{
+        width: 100%;
+        margin-left: 0px;
+    }
+    
+    .ant-select-selection--single{
+        width: 100%;    
+        margin-left: 0px;  
+    }
+}
