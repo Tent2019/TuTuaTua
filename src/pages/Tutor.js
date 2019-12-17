@@ -30,7 +30,8 @@ class Tutor extends Component {
 
   // === Calendar === //
   dateCellRender = (moment) => {      
-    let handleAddSchedule = (fromtime,totime,price) => () => {
+
+    let handleAddSchedule = (fromtime,totime,price) => {
       this.setState({schedules:[...this.state.schedules, {
         date: moment.format('L'),
         timeRange: fromtime + '-' + totime,
@@ -53,12 +54,10 @@ class Tutor extends Component {
       )
 
       return result
-    }
-    
+    }    
 
     return (       
-      <div>
-        
+      <div>        
         <PopoverDay handleAddSchedule={handleAddSchedule} />         
         {filterScheduleDay(this.state.schedules).map( (offer, offerId) => 
           <PopReserve key={offerId}
@@ -91,6 +90,7 @@ class Tutor extends Component {
         <Tabs onChange={callback} type="card" >
           {/* Tab 1 */}
           <TabPane tab="Tutor Profile" key="1">
+
             <div id='img-profile-tab1'>
               <img id='img-profile' src='images/tutor01.jpeg' />
             </div>          

@@ -20,8 +20,12 @@ export class PopoverDay extends React.Component {
     this.setState({ visible });
   };
 
-  render() {
-    const { handleAddSchedule} = this.props
+  handleAddThenHide = () => {
+    this.props.handleAddSchedule(this.state.fromtime,this.state.totime,this.state.price)
+    this.hide()
+  }
+
+  render() {    
     return (
       <Popover
         placement='right'
@@ -41,7 +45,7 @@ export class PopoverDay extends React.Component {
             /><span>baht</span>                
             <div className='endPopover'>
                 <div
-                  onClick={ handleAddSchedule(this.state.fromtime,this.state.totime,this.state.price) }  
+                  onClick = {this.handleAddThenHide} 
                   style={{color:'#0066ff'}}>
                     Submit
             </div>
