@@ -3,9 +3,9 @@ import './Tutor.css'
 import { Descriptions, Tabs, Input } from 'antd';
 import { TagSkill } from '../components/TagSkill';
 import { WriteComment } from '../components/Comment'
-import { Calendar } from 'antd';
-import { PopoverDay } from '../components/PopoverDay';
-import { PopReserve } from '../components/PopReserve'
+import { CreateCalendar } from '../components/CreateCalendar';
+
+
 
 // === Tabs === //
 const { TabPane } = Tabs;
@@ -17,8 +17,7 @@ class Tutor extends Component {
 
   state = {
     edus: [{id:0}],
-    awards: [{id:0}],
-    schedules: [] // { date: ,timeRange: , price: }    
+    awards: [{id:0}]  
   }
 
   handleDeleteEdu = (targetId) => () => {
@@ -28,60 +27,7 @@ class Tutor extends Component {
     this.setState({awards: this.state.awards.filter(award => award.id !== targetId)})
   }  
 
-  // === Calendar === //
-  dateCellRender = (moment) => {      
-
-    let handleAddSchedule = (fromtime,totime,price) => {
-      this.setState({schedules:[...this.state.schedules, {
-        date: moment.format('L'),
-        timeRange: fromtime + '-' + totime,
-        price: price,
-        isReserved: false
-      } ] },
-        //()=>console.log(this.state.schedules)
-      )
-    }
-
-    let filterScheduleDay = (schedules) => {
-      let result = schedules.filter(
-        schedule => schedule.date.slice(3,5) == moment.date()
-      )  
-      result = result.filter(
-        schedule => schedule.date.slice(0,2) == moment.month()+1
-      )
-      result = result.filter(
-        schedule => schedule.date.slice(6) == moment.year()
-      )
-
-      return result
-    }    
-
-    return (       
-      <div>        
-        <PopoverDay handleAddSchedule={handleAddSchedule} />         
-        {filterScheduleDay(this.state.schedules).map( (offer, offerId) => 
-          <PopReserve key={offerId}
-            offer={offer}            
-          />
-        )}              
-      </div>    
-    );
-  }
-
-  getMonthData = (value) => {
-    if (value.month() === 8) {
-      return 1394;
-    }
-  }
-  monthCellRender = (value) => {
-    const num = this.getMonthData(value);
-    return num ? (
-      <div className="notes-month">
-        <section>{num}</section>
-        <span>Backlog number</span>
-      </div>
-    ) : null;
-  }// End Calendar
+  
 
   render() {
     return (
@@ -163,10 +109,8 @@ class Tutor extends Component {
 
         </Tabs>        
             
-        <Calendar 
-          dateCellRender={this.dateCellRender} 
-          monthCellRender={this.monthCellRender} 
-        />
+        <CreateCalendar />
+        
       </div>
     );
   }
