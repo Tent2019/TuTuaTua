@@ -1,8 +1,6 @@
 import { combineReducers } from 'redux'
-import tutorsReducer from './tutorsReducer'
-import studentReducer from './studentsReducer'
+import usersReducer from './usersReducer'
 
 export default combineReducers({   
-    tutors: tutorsReducer,
-    student: studentReducer
+    tutors: usersReducer
 })

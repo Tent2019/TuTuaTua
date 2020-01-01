@@ -9,9 +9,10 @@
 #form {
     border: 0px solid;
     padding: 20px 40px;
+    text-align: center;
 }
 
-#form > .ant-form-item:nth-child(4){
+#form > .ant-form-item:nth-child(3){
     border: 0px solid;
     margin-bottom: 0px;
     display: flex;
@@ -21,7 +22,7 @@
 
 .login-input{
     width: 90%;
-    margin-left: 10px;
+    margin-left: 0px;
 }
 
 .ant-select-selection--single{

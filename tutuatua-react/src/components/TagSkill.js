@@ -29,13 +29,18 @@ export class TagSkill extends React.Component {
     if (inputValue && tags.indexOf(inputValue) === -1) {
       tags = [...tags, inputValue];
     }
-    console.log(tags);
+
     this.setState({
       tags,
       inputVisible: false,
       inputValue: '',
-    });
+    })
   };
+
+  componentDidMount = () => {
+    console.log(this.props.skills)
+    // this.setState({ tags: this.props.skills.map(x => console.log(x)) })
+  }
 
   saveInputRef = input => (this.input = input);
 

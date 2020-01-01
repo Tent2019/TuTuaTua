@@ -1,21 +1,14 @@
-export const ADD_TUTOR = 'ADD_TUTOR';
-export const ADD_STUDENT = 'ADD_STUDENT';
+export const ADD_USER = 'ADD_USER';
 
-export function addTutor(username, password) {
+export function addUser(username, password, usertypes) {
     return {
-        type: ADD_TUTOR,
+        type: ADD_USER,
         id: Math.round(Math.random()*1000),
         username: username,
-        password: password
+        password: password,
+        usertypes: usertypes
     }    
 }
 
-export function addStudent(username, password) {
-    return {
-        type: ADD_STUDENT,
-        id: Math.round(Math.random()*1000),
-        username: username,
-        password: password
-    }    
-}
+
 

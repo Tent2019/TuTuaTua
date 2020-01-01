@@ -1,84 +1,46 @@
 import React from 'react';
 import './LogInForm.css'
+import Axios from '../config/axios.setup'
+import { Form, Input, Button, notification, Icon  } from 'antd';
 
-// == FORM ==
-import {
-  Form,
-  Input,
-  Button
-} from 'antd';
-
-// == SELECT ==
-import { Select } from 'antd';
-
-// == SELECT ==
-const { Option } = Select;
-
-function onBlur() {
-  // console.log('blur');
-}
-
-function onFocus() {
-  // console.log('focus');
-}
-
-function onSearch(val) {
-  // console.log('search:', val);
-}
-
+const successRegister = (succmsg) => {
+  notification.open({
+    message: 'Register success',
+    description: succmsg,
+    icon: <Icon type="smile" style={{color:'blue'}} /> ,
+  });
+};
+const failRegister = (errmsg) => {
+  notification.open({
+    message: 'Fail to register',
+    description: errmsg,
+    icon: <Icon type="warning" style={{color:'red'}} /> ,
+  });
+};
 
 class RegistrationForm extends React.Component {
-  state = {
-    confirmDirty: false,
-    autoCompleteResult: [],
 
-    username: '',
-    password: '',
-    usertypes: ''
-  };
-
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
+
+    this.props.form.validateFieldsAndScroll(async (err, values) => {
+      if (!err) {     
+        try {
+          let result = await Axios.post('/loginUser', { 
+                  username: values.username, 
+                  password: values.password
+                })
+          localStorage.setItem('ACCESS_TOKEN', result.data.token)
+          successRegister(result.data.message)
+        } catch (err) {                   
+          failRegister(err.response.data.message)    
+        }
       }
     });
   };
 
-  handleConfirmBlur = e => {
-    const { value } = e.target;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-  };
-
-  compareToFirstPassword = (rule, value, callback) => {
-    const { form } = this.props;
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!');
-    } else {
-      callback();
-    }
-  };
-
-  validateToNextPassword = (rule, value, callback) => {
-    const { form } = this.props;
-    if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
-    }
-    callback();
-  };
-
-  handleWebsiteChange = value => {
-    let autoCompleteResult;
-    if (!value) {
-      autoCompleteResult = [];
-    } else {
-      autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
-    }
-    this.setState({ autoCompleteResult });
-  };
-
   render() {
+    
     const { getFieldDecorator } = this.props.form;    
     const formItemLayout = {
       labelCol: {
@@ -91,13 +53,11 @@ class RegistrationForm extends React.Component {
       },
     };
 
-    const { handleLinkSignUpForm } = this.props
-
-    return (
+    const { handleLinkSignUpForm, pushToTutor } = this.props
+    
+    return (      
       <div id='container-form'>
-        <Form id='form'
-          {...formItemLayout} onSubmit={this.handleSubmit}
-        >
+        <Form id='form' {...formItemLayout} onSubmit={this.handleSubmit} >
           <Form.Item label="Username">
             {getFieldDecorator('username', {
               rules: [{ 
@@ -116,29 +76,10 @@ class RegistrationForm extends React.Component {
             })(<Input.Password className='login-input' />)}
           </Form.Item>     
 
-          <Form.Item label="User Types">
-            {getFieldDecorator('phone', {
-              rules: [{ required: true, message: 'Please select your user types!' }],
-              // ***
-            })(<Select
-              showSearch
-              className='select-input'            
-              placeholder="Select type"
-              optionFilterProp="children"
-              onFocus={onFocus}
-              onBlur={onBlur}
-              onSearch={onSearch}
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              <Option value="Tutor">Tutor</Option>
-              <Option value="Student">Student</Option>
-            </Select>)}
-          </Form.Item>
-
           <Form.Item>
-            <Button type="primary" ghost htmlType="submit">
+            <Button type="primary" ghost htmlType="submit"
+              htmlType='submit'
+            >
               Login
             </Button>            
             <Button type="primary" htmlType="submit"
@@ -156,4 +97,3 @@ class RegistrationForm extends React.Component {
 }
 
 export const LogInForm = Form.create({ name: 'register' })(RegistrationForm);
-
