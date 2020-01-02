@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './Tutor.css'
-import { Descriptions, Tabs, Input, Button } from 'antd';
-import { TagSkill } from '../components/TagSkill';
+import { Descriptions, Tabs, Input, Button, Popover } from 'antd';
 import { WriteComment } from '../components/Comment'
 import { CreateCalendar } from '../components/CreateCalendar';
 import Axios from '../config/axios.setup'
@@ -9,16 +8,40 @@ import Axios from '../config/axios.setup'
 // === Tabs === //
 const { TabPane } = Tabs;
 function callback(key) {
-  console.log(key);
+  // console.log(key);
 } // End Tabs
 
 class Tutor extends Component {
 
   state = {
+    username: '',
     telephone: '',
+    image: '',
     skills: [],
     edus: [],
     awards: []  
+  }
+
+  handleAddSkill = () => {
+    this.setState(
+      { skills: [...this.state.skills,{id:Math.round(Math.random()*1000)}] },
+      // ()=>console.log(this.state.skills)
+    )
+  }
+  handleChangeSkill = (targetId) => (e) => {
+    this.setState(
+      { 
+        skills: this.state.skills.map(skill => skill.id === targetId ? 
+          {...skill, detail: e.target.value} : skill) 
+      },
+      // ()=>console.log(this.state.skills)
+    )
+  }
+  handleDeleteSkill = (targetId) => () => {
+    this.setState(
+      {skills: this.state.skills.filter(skill => skill.id !== targetId)},
+      // ()=>console.log(this.state.skills)
+    )
   }
 
   handleAddEdu = () => {
@@ -46,7 +69,7 @@ class Tutor extends Component {
   handleAddAward = () => {
     this.setState(
       { awards: [...this.state.awards, {id:Math.round(Math.random()*1000)}] },
-      ()=>console.log(this.state.awards)
+      // ()=>console.log(this.state.awards)
     )
   }
   handleChangeAward = (targetId) => (e) => {
@@ -55,22 +78,25 @@ class Tutor extends Component {
         awards: this.state.awards.map(award => award.id === targetId ? 
           {...award, detail: e.target.value} : award) 
       },
-      ()=>console.log(this.state.awards)
+      // ()=>console.log(this.state.awards)
     )
   }
   handleDeleteAward = (targetId) => () => {
     this.setState(
       {awards: this.state.awards.filter(award => award.id !== targetId)},
-      ()=>console.log(this.state.awards)
+      // ()=>console.log(this.state.awards)
     )
   } 
 
   updateProfile = async () => {
     try {
         let result = await Axios.put('/updateProfile',{
-          telephone: this.state.telephone
+          telephone: this.state.telephone,
+          skills: this.state.skills,
+          edus: this.state.edus,
+          awards: this.state.awards
         })  
-      console.log(result)
+      console.log(result.data)
     } catch (err) {
       console.log(err)
     }   
@@ -79,11 +105,14 @@ class Tutor extends Component {
   componentDidMount = async () => {
     try {
       let result = await Axios.get('/getProfile')
-      this.setState({ skills: result.data.skills },
-        () => console.log(this.state.skills)
-      )
+      console.log(result.data)
       this.setState({
-        telephone: result.data.telephone
+        username: result.data.username,
+        telephone: result.data.telephone,
+        image: result.data.image,
+        skills: result.data.skills,
+        edus: result.data.education,
+        awards: result.data.awards
       })
     } catch (error) {
       console.log(error)
@@ -98,11 +127,17 @@ class Tutor extends Component {
           {/* Tab 1 */}
           <TabPane id='tutor-left-tab' tab="Tutor Profile" key="1">
 
-            <div id='img-profile-tab1'>
-              <img id='img-profile' src='images/tutor01.jpeg' />
-            </div>          
+            <Popover placement="right" title={'Image URL'} 
+              content={'asdf'} 
+              trigger="click"
+            >
+              <div id='img-profile-tab1'>
+                <img id='img-profile' src={this.state.image} />
+              </div> 
+            </Popover>                  
                      
             <Descriptions
+              title={`Teacher ${this.state.username}`}
               bordered
               column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
               >
@@ -115,9 +150,24 @@ class Tutor extends Component {
                 />                              
               </Descriptions.Item>
 
-              <Descriptions.Item label='Skills'>
-                <TagSkill skills={this.state.skills}/>                              
-              </Descriptions.Item>
+              <Descriptions.Item label="Skills">
+                {this.state.skills.map((skill, index) =>
+                  <Input key={skill.id}
+                    className='tutor-input'
+                    placeholder='Type somthing ...' 
+                    onChange={this.handleChangeSkill(skill.id)}
+                    value={skill.detail}
+                    suffix = {<span id='write-delete'>
+                      <i className="fas fa-trash"
+                        onClick={this.handleDeleteSkill(skill.id)}
+                      ></i>                      
+                    </span>}
+                  />                 
+                )}
+                <div className='addEdu' onClick={this.handleAddSkill} > 
+                 ... 
+                </div>
+              </Descriptions.Item> 
       
               <Descriptions.Item label="Education">
                 {this.state.edus.map((edu, index) =>
@@ -125,6 +175,7 @@ class Tutor extends Component {
                     className='tutor-input'
                     placeholder='Type somthing ...' 
                     onChange={this.handleChangeEdu(edu.id)}
+                    value={edu.detail}
                     suffix = {<span id='write-delete'>
                       <i className="fas fa-trash"
                         onClick={this.handleDeleteEdu(edu.id)}
@@ -143,6 +194,7 @@ class Tutor extends Component {
                     className='tutor-input'
                     placeholder='Type somthing ...' 
                     onChange={this.handleChangeAward(award.id)}
+                    value={award.detail}
                     suffix = {<span id='write-delete'>
                       <i className="fas fa-trash"
                         onClick={this.handleDeleteAward(award.id)}

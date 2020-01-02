@@ -24,13 +24,13 @@ export class CreateCalendar extends Component {
 
     let filterScheduleDay = (schedules) => {
       let result = schedules.filter(
-        schedule => schedule.date.slice(3,5) == moment.date()
+        schedule => schedule.date.slice(3,5) === moment.date()
       )  
       result = result.filter(
-        schedule => schedule.date.slice(0,2) == moment.month()+1
+        schedule => schedule.date.slice(0,2) === moment.month()+1
       )
       result = result.filter(
-        schedule => schedule.date.slice(6) == moment.year()
+        schedule => schedule.date.slice(6) === moment.year()
       )
 
       return result

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Student.css'
-import { Descriptions, Tabs, Input } from 'antd';
+import { Descriptions, Input } from 'antd';
 
 class Student extends Component {
 
@@ -19,7 +19,7 @@ class Student extends Component {
 
         {/* profile */}
         <div id='student-profile'>      
-          <img id='img-profile' src='images/student01.jpg' /> 
+          <img id='img-profile' src='images/student01.jpg' alt=''/> 
           <Descriptions
             // title="Tutor Descriptions"
             bordered

@@ -20,8 +20,7 @@
 }
 /* img-profile */
 #img-profile-tab1{
-    border: 0px solid;
-    text-align: center;
+    height: 200px;
     margin-bottom: 15px;
 }
 #img-profile{
@@ -38,7 +37,7 @@
 .ant-descriptions-view{
     border: 0px solid !important;
     overflow: auto;
-    height: 180px;
+    height: 150px;
 }
 
 .ant-descriptions-item-content{

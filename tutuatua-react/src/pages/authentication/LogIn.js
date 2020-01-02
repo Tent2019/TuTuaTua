@@ -22,7 +22,7 @@ class LogIn extends Component {
       <div id='container-login'>
         
         <div id='frame-logo'>         
-         <img id='img-logo' src='images/why.jpeg' />
+         <img id='img-logo' src='images/why.jpeg' alt='' />
         </div>
 
         <div id='frame-login'>     

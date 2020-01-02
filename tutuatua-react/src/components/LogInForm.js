@@ -53,7 +53,10 @@ class RegistrationForm extends React.Component {
       },
     };
 
-    const { handleLinkSignUpForm, pushToTutor } = this.props
+    const { 
+      handleLinkSignUpForm, 
+      // pushToTutor 
+    } = this.props
     
     return (      
       <div id='container-form'>
@@ -77,9 +80,7 @@ class RegistrationForm extends React.Component {
           </Form.Item>     
 
           <Form.Item>
-            <Button type="primary" ghost htmlType="submit"
-              htmlType='submit'
-            >
+            <Button type="primary" ghost htmlType="submit">
               Login
             </Button>            
             <Button type="primary" htmlType="submit"
