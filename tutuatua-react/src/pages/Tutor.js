@@ -14,12 +14,14 @@ function callback(key) {
 class Tutor extends Component {
 
   state = {
+    // profile
     username: '',
     telephone: '',
     image: '',
     skills: [],
     edus: [],
-    awards: []  
+    awards: [],  
+    changeImage: '',
   }
 
   handleAddSkill = () => {
@@ -92,14 +94,27 @@ class Tutor extends Component {
     try {
         let result = await Axios.put('/updateProfile',{
           telephone: this.state.telephone,
+          image: this.state.changeImage ? this.state.changeImage : this.state.image,
           skills: this.state.skills,
           edus: this.state.edus,
           awards: this.state.awards
         })  
       console.log(result.data)
+      this.setState({ changeImage: '' })
     } catch (err) {
       console.log(err)
     }   
+
+    // refresh
+    try {
+      let result = await Axios.get('/getProfile')
+      console.log(result.data)
+      this.setState({
+        image: result.data.image
+      })
+    } catch (error) {
+      console.log(error)
+    }  
   }
   
   componentDidMount = async () => {
@@ -128,11 +143,16 @@ class Tutor extends Component {
           <TabPane id='tutor-left-tab' tab="Tutor Profile" key="1">
 
             <Popover placement="right" title={'Image URL'} 
-              content={'asdf'} 
+              content={<Input onChange={e => this.setState({ changeImage: e.target.value })}
+                value={this.state.changeImage} 
+              />} 
               trigger="click"
             >
               <div id='img-profile-tab1'>
-                <img id='img-profile' src={this.state.image} />
+                {this.state.image ?
+                  <img id='img-profile' src={this.state.image} /> :
+                  <div>Choose Image</div>
+                }                
               </div> 
             </Popover>                  
                      
