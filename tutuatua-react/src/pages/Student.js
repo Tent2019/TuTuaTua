@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import './Student.css';
-import { Descriptions, Tabs, Input, Button, Popover, Calendar } from 'antd';
-import { WriteComment } from '../components/Comment';
+import { Descriptions, Tabs, Input, Button, Popover, Calendar, Card } from 'antd';
 import { PopoverDay } from '../components/PopoverDay';
 import { PopReserve } from '../components/PopReserve';
 import Axios from '../config/axios.setup';
 
-// === Tabs === //
+// === Tab === //
 const { TabPane } = Tabs;
 function callback(key) {
   // console.log(key);
-} // End Tabs
+} 
+
+// === Card === //
+const { Meta } = Card;
 
 class Student extends Component {
 
@@ -21,16 +23,17 @@ class Student extends Component {
     image: '',
     edus: [],
     changeImage: '',
+    tutors: [],
 
     // === calendar === //
-    schedules: [] // { id: ,date: ,timeRange: , price: }   
+    schedules: [] // { id: ,date: ,timeRange: , price: ,status:}   
   }
 
   // === Profile Function === //
   handleAddEdu = () => {
     this.setState(
       { edus: [...this.state.edus,{id:Math.round(Math.random()*1000)}] },
-      ()=>console.log(this.state.edus)
+      // ()=>console.log(this.state.edus)
     )
   }
   handleChangeEdu = (targetId) => (e) => {
@@ -39,13 +42,13 @@ class Student extends Component {
         edus: this.state.edus.map(edu => edu.id === targetId ? 
           {...edu, detail: e.target.value} : edu) 
       },
-      ()=>console.log(this.state.edus)
+      // ()=>console.log(this.state.edus)
     )
   }
   handleDeleteEdu = (targetId) => () => {
     this.setState(
       {edus: this.state.edus.filter(edu => edu.id !== targetId)},
-      ()=>console.log(this.state.edus)
+      // ()=>console.log(this.state.edus)
     )
   }
 
@@ -76,30 +79,6 @@ class Student extends Component {
   
   // === Calendar Function === //
   dateCellRender = (moment) => {      
-
-    let handleAddSchedule = async (fromtime,totime,price) => {
-      try {
-        let id = Math.round(Math.random()*1000);
-        let result = await Axios.post('/addSchedule/'+id, {        
-        date: moment.format('L'),
-        timeRange: fromtime + '-' + totime,
-        price: price,
-        status: false
-      })
-        console.log(result.data)  
-
-        // === refresh === //
-        try {
-          let resultSchedule = await Axios.get('/getSchedule')
-          this.setState({ schedules: resultSchedule.data })
-        } catch (error) {
-          console.log(error)
-        }        
-
-      } catch (err) {
-        console.log(err)
-      }   
-    }
 
     let filterScheduleDay = (schedules) => {
       let result = schedules.filter(
@@ -132,13 +111,26 @@ class Student extends Component {
       }           
     }
 
+    let handleReserveSchedule = async (targerId,tutorId) => {
+      try {
+        let result = await Axios.put('/reserveSchedule/'+targerId)
+        console.log(result.data)
+
+        // refresh
+        let resultSchedule = await Axios.get('/getScheduleBySelectTutor/'+tutorId)
+        this.setState({ schedules: resultSchedule.data })
+      } catch (error) {
+        console.log(error)
+      }           
+    }
+
     return (       
       <div>        
-        <PopoverDay handleAddSchedule={handleAddSchedule} /> 
         {filterScheduleDay(this.state.schedules).map( schedule => 
           <PopReserve key={schedule.id}
             schedule={schedule}      
-            handleDeleteSchedule={handleDeleteSchedule}      
+            handleDeleteSchedule={handleDeleteSchedule}  
+            handleReserveSchedule={handleReserveSchedule}    
           />
         )}             
       </div>    
@@ -160,7 +152,17 @@ class Student extends Component {
     ) : null;
   }
 
-  // === Extra === //
+  handleGetSchedule = (tutorId) => async () => {
+    try {
+      let resultSchedule = await Axios.get('/getScheduleBySelectTutor/'+tutorId)
+      // console.log(resultSchedule.data)
+      this.setState({ schedules: resultSchedule.data })
+    } catch (error) {
+      console.log(error)
+    }    
+  }
+
+  // === @ Initiate === //
 
   componentDidMount = async () => {
     try {
@@ -169,14 +171,13 @@ class Student extends Component {
       this.setState({
         username: resultProfile.data.username,
         telephone: resultProfile.data.telephone,
-        image: resultProfile.data.image
+        image: resultProfile.data.image,
+        edus: resultProfile.data.education
       })
 
-      let resultSchedule = await Axios.get('/getSchedule')
-      // console.log(resultSchedule.data)
-      this.setState({
-        schedules: resultSchedule.data
-      })
+      let resultTutors = await Axios.get('/getTutors')
+      // console.log(resultTutors.data)
+      this.setState({ tutors: resultTutors.data })
 
     } catch (error) {
       console.log(error)
@@ -249,8 +250,24 @@ class Student extends Component {
           </TabPane>
 
           {/* Tab 2 */}
-          <TabPane tab="Select Tutor" key="2">
-                                            
+          <TabPane id='student-right-tab' tab="Select Tutor" key="2">
+            <div id='card-container'>
+              {this.state.tutors.map(tutor => 
+                <Card key={tutor.id}
+                  style={{ width: 140 }} 
+                  cover={
+                  <img alt="" src={tutor.image}
+                    onClick={this.handleGetSchedule(tutor.id)}
+                  />
+                  }
+                >
+                  <b>{tutor.username}</b><br />
+                  {tutor.skills.map( (skill,skillId) => 
+                    <span key={skillId}>{skill.detail+' | '}</span>
+                  )}                  
+                </Card>                
+              )}           
+            </div>            
           </TabPane>
 
         </Tabs>        

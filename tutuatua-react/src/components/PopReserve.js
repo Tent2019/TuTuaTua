@@ -4,8 +4,9 @@ import './PopReserve.css'
 
 export class PopReserve extends Component {
 
-    confirm = () => {
-        message.info('Clicked on Yes.');
+    confirm = (scheduleId) => () => {
+        message.info('success');
+        this.props.handleReserveSchedule(scheduleId,this.props.schedule.tutorId)   
     }
 
     render() {
@@ -21,11 +22,13 @@ export class PopReserve extends Component {
         return (
             <Popconfirm placement="right" 
                 title={text} 
-                onConfirm={this.confirm} 
+                onConfirm={this.confirm(schedule.id)} 
                 okText="Yes" 
                 cancelText="No"
             >
-                <Button id={schedule.id} className='confirm-button'>
+                <Button id={schedule.id} className='confirm-button'
+                    style={{ backgroundColor: schedule.status === false ? '#00ff99' : '#ff6666' }}
+                >
                     {schedule.timeRange}
                 </Button>
             </Popconfirm>
