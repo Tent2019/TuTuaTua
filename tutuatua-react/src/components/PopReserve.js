@@ -9,19 +9,25 @@ export class PopReserve extends Component {
     }
 
     render() {
-        const {offer} = this.props
+        const {schedule, handleDeleteSchedule} = this.props
         const text = <div>
-                        <b style={{color:'red'}}>Price: {offer.price} Baht</b>
-                        <div>Are you sure ?</div>
+                        <b style={{color:'red'}}>Price: {schedule.price} Baht &nbsp;
+                            <i className="fas fa-trash"
+                                onClick={handleDeleteSchedule(schedule.id)}
+                            ></i>  
+                        </b>
+                        <div>Are you sure ?</div>                        
                     </div>        
         return (
             <Popconfirm placement="right" 
                 title={text} 
                 onConfirm={this.confirm} 
-                content={'xxx'}
                 okText="Yes" 
-                cancelText="No">
-                <Button className='confirm-button'>{offer.timeRange}</Button>
+                cancelText="No"
+            >
+                <Button id={schedule.id} className='confirm-button'>
+                    {schedule.timeRange}
+                </Button>
             </Popconfirm>
         );
     }

@@ -5,14 +5,14 @@ import { Form, Input, Button, notification, Icon  } from 'antd';
 
 const successRegister = (succmsg) => {
   notification.open({
-    message: 'Register success',
+    message: 'Login success',
     description: succmsg,
     icon: <Icon type="smile" style={{color:'blue'}} /> ,
   });
 };
 const failRegister = (errmsg) => {
   notification.open({
-    message: 'Fail to register',
+    message: 'Fail to login',
     description: errmsg,
     icon: <Icon type="warning" style={{color:'red'}} /> ,
   });

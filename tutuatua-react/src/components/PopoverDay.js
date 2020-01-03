@@ -5,6 +5,7 @@ import './PopoverDay.css'
 export class PopoverDay extends React.Component {
   state = {
     visible: false,
+    
     fromtime: '',
     totime: '',
     price: undefined,
@@ -15,7 +16,6 @@ export class PopoverDay extends React.Component {
       visible: false,
     });
   };
-
   handleVisibleChange = visible => {
     this.setState({ visible });
   };
@@ -23,6 +23,7 @@ export class PopoverDay extends React.Component {
   handleAddThenHide = () => {
     this.props.handleAddSchedule(this.state.fromtime,this.state.totime,this.state.price)
     this.hide()
+    this.setState({ fromtime:'', totime:'', price:undefined })
   }
 
   render() {    
@@ -34,14 +35,17 @@ export class PopoverDay extends React.Component {
             <Input className='popover-input' placeholder='time from ...' 
                 style={{marginRight:'5px'}}
                 onChange={e => this.setState({fromtime: e.target.value})}
+                value={this.state.fromtime}
             /><span>-</span>
             <Input className='popover-input' placeholder='to ...' 
                 onChange={e => this.setState({totime: e.target.value})}
+                value={this.state.totime}
             />
             <br />
             <Input className='popover-input' placeholder='price ...' 
                 style={{width:'150px'}}
                 onChange={e => this.setState({price: e.target.value})}
+                value={this.state.price}
             /><span>baht</span>                
             <div className='endPopover'>
                 <div

@@ -1,80 +1,268 @@
 import React, { Component } from 'react';
-import './Student.css'
-import { Descriptions, Input } from 'antd';
+import './Student.css';
+import { Descriptions, Tabs, Input, Button, Popover, Calendar } from 'antd';
+import { WriteComment } from '../components/Comment';
+import { PopoverDay } from '../components/PopoverDay';
+import { PopReserve } from '../components/PopReserve';
+import Axios from '../config/axios.setup';
+
+// === Tabs === //
+const { TabPane } = Tabs;
+function callback(key) {
+  // console.log(key);
+} // End Tabs
 
 class Student extends Component {
 
   state = {
-    edus: [{id:0}],
-    schedules: [] // { date: ,timeRange: , price: }    
+    // === profile === //
+    username: '',
+    telephone: '',
+    image: '',
+    edus: [],
+    changeImage: '',
+
+    // === calendar === //
+    schedules: [] // { id: ,date: ,timeRange: , price: }   
   }
 
+  // === Profile Function === //
+  handleAddEdu = () => {
+    this.setState(
+      { edus: [...this.state.edus,{id:Math.round(Math.random()*1000)}] },
+      ()=>console.log(this.state.edus)
+    )
+  }
+  handleChangeEdu = (targetId) => (e) => {
+    this.setState(
+      { 
+        edus: this.state.edus.map(edu => edu.id === targetId ? 
+          {...edu, detail: e.target.value} : edu) 
+      },
+      ()=>console.log(this.state.edus)
+    )
+  }
   handleDeleteEdu = (targetId) => () => {
-    this.setState({edus: this.state.edus.filter(edu => edu.id !== targetId)})
+    this.setState(
+      {edus: this.state.edus.filter(edu => edu.id !== targetId)},
+      ()=>console.log(this.state.edus)
+    )
+  }
+
+  updateProfile = async () => {
+    try {
+        let result = await Axios.put('/updateProfile',{
+          telephone: this.state.telephone,
+          image: this.state.changeImage ? this.state.changeImage : this.state.image,
+          edus: this.state.edus,
+        })  
+      console.log(result.data)
+      this.setState({ changeImage: '' })
+    } catch (err) {
+      console.log(err)
+    }   
+
+    // refresh
+    try {
+      let result = await Axios.get('/getProfile')
+      console.log(result.data)
+      this.setState({
+        image: result.data.image
+      })
+    } catch (error) {
+      console.log(error)
+    }  
+  }
+  
+  // === Calendar Function === //
+  dateCellRender = (moment) => {      
+
+    let handleAddSchedule = async (fromtime,totime,price) => {
+      try {
+        let id = Math.round(Math.random()*1000);
+        let result = await Axios.post('/addSchedule/'+id, {        
+        date: moment.format('L'),
+        timeRange: fromtime + '-' + totime,
+        price: price,
+        status: false
+      })
+        console.log(result.data)  
+
+        // === refresh === //
+        try {
+          let resultSchedule = await Axios.get('/getSchedule')
+          this.setState({ schedules: resultSchedule.data })
+        } catch (error) {
+          console.log(error)
+        }        
+
+      } catch (err) {
+        console.log(err)
+      }   
+    }
+
+    let filterScheduleDay = (schedules) => {
+      let result = schedules.filter(
+        schedule => schedule.date.slice(3,5) == moment.date()
+      )  
+      result = result.filter(
+        schedule => schedule.date.slice(0,2) == moment.month()+1
+      )
+      result = result.filter(
+        schedule => schedule.date.slice(6) == moment.year()
+      )
+      return result
+    }    
+
+    let handleDeleteSchedule = (targerId) => async () => {
+      try {
+        let result = await Axios.delete('/deleteSchedule/'+targerId)
+        console.log(result)
+
+        // === refresh === //
+        try {
+          let resultSchedule = await Axios.get('/getSchedule')
+          this.setState({ schedules: resultSchedule.data })
+        } catch (error) {
+          console.log(error)
+        }  
+
+      } catch (error) {
+        console.log(error)
+      }           
+    }
+
+    return (       
+      <div>        
+        <PopoverDay handleAddSchedule={handleAddSchedule} /> 
+        {filterScheduleDay(this.state.schedules).map( schedule => 
+          <PopReserve key={schedule.id}
+            schedule={schedule}      
+            handleDeleteSchedule={handleDeleteSchedule}      
+          />
+        )}             
+      </div>    
+    );
+  }
+
+  getMonthData = (value) => {
+    if (value.month() === 8) {
+      return 1394;
+    }
+  }
+  monthCellRender = (value) => {
+    const num = this.getMonthData(value);
+    return num ? (
+      <div className="notes-month">
+        <section>{num}</section>
+        <span>Backlog number</span>
+      </div>
+    ) : null;
+  }
+
+  // === Extra === //
+
+  componentDidMount = async () => {
+    try {
+      let resultProfile = await Axios.get('/getProfile')
+      console.log(resultProfile.data)
+      this.setState({
+        username: resultProfile.data.username,
+        telephone: resultProfile.data.telephone,
+        image: resultProfile.data.image
+      })
+
+      let resultSchedule = await Axios.get('/getSchedule')
+      // console.log(resultSchedule.data)
+      this.setState({
+        schedules: resultSchedule.data
+      })
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   render() {
     return (
       <div id='container-student'> 
+        
+        <Tabs onChange={callback} type="card" >
+          {/* Tab 1 */}
+          <TabPane id='student-left-tab' tab="Student Profile" key="1">
 
-        {/* profile */}
-        <div id='student-profile'>      
-          <img id='img-profile' src='images/student01.jpg' alt=''/> 
-          <Descriptions
-            // title="Tutor Descriptions"
-            bordered
-            column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
+            <Popover placement="right" title={'Image URL'} 
+              content={<Input onChange={e => this.setState({ changeImage: e.target.value })}
+                value={this.state.changeImage} 
+              />} 
+              trigger="click"
             >
+              <div id='img-profile-tab1'>
+                {this.state.image ?
+                  <img id='img-profile' src={this.state.image} /> :
+                  <div>Choose Image</div>
+                }                
+              </div> 
+            </Popover>                  
+                     
+            <Descriptions
+              title={`Student ${this.state.username}`}
+              bordered
+              column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
+              >
 
-            <Descriptions.Item label='Telephone'>
-              <Input className='student-input' 
-                placeholder='Type somthing ...' 
-              />                              
-            </Descriptions.Item>
-
-            <Descriptions.Item label="Education">
-              {this.state.edus.map((edu, index) =>
-                index === 0 ? 
-                <Input key={edu.id} className='student-input'  placeholder='Type somthing ...' /> :    
-                <Input key={edu.id}    
-                  className='student-input'              
+              <Descriptions.Item label='Telephone'>
+                <Input className='student-input' 
                   placeholder='Type somthing ...' 
-                  suffix = {<span id='write-delete'>
-                    <i className="fas fa-trash"
-                      onClick={this.handleDeleteEdu(edu.id)}
-                    ></i>                      
-                  </span>}
-                />                 
-              )}
-              <div className='addEdu'
-                onClick={() => this.setState({ edus: [...this.state.edus,{id: Math.round(Math.random()*1000)}] } )}
-              > 
-                ... 
-              </div>
-            </Descriptions.Item> 
+                  onChange={e => this.setState({telephone: e.target.value})}
+                  value={this.state.telephone}
+                />                              
+              </Descriptions.Item>
 
-            <Descriptions.Item label='Balance'>
-              <Input className='tutor-input' 
-                placeholder='Type somthing ...' 
-              />                              
-            </Descriptions.Item>
+              <Descriptions.Item label="Education">
+                {this.state.edus.map((edu, index) =>
+                  <Input key={edu.id}
+                    className='student-input'
+                    placeholder='Type somthing ...' 
+                    onChange={this.handleChangeEdu(edu.id)}
+                    value={edu.detail}
+                    suffix = {<span id='write-delete'>
+                      <i className="fas fa-trash"
+                        onClick={this.handleDeleteEdu(edu.id)}
+                      ></i>                      
+                    </span>}
+                  />                 
+                )}
+                <div className='addEdu' onClick={this.handleAddEdu} > 
+                 ... 
+                </div>
+              </Descriptions.Item>  
 
-          </Descriptions>              
-        </div>
+            </Descriptions>                   
 
-        {/* filter */}
-        <div id='search-tutor'>      
-          <div id='search-inputs'>
-            <Input id='search-input' placeholder='search by subject' />    
-            <Input id='search-input' placeholder='search by grade' />                
-          </div>
+            <Button style={{margin:'15px 0px 0px'}}
+              onClick={this.updateProfile}
+            >
+              Save
+            </Button>   
+
+          </TabPane>
+
+          {/* Tab 2 */}
+          <TabPane tab="Select Tutor" key="2">
+                                            
+          </TabPane>
+
+        </Tabs>        
             
-        </div>
-
+        <Calendar 
+            dateCellRender={this.dateCellRender} 
+            monthCellRender={this.monthCellRender} 
+        />         
+        
       </div>
     );
   }
 }
 
 export default Student;
-

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import './Tutor.css'
-import { Descriptions, Tabs, Input, Button, Popover } from 'antd';
-import { WriteComment } from '../components/Comment'
-import { CreateCalendar } from '../components/CreateCalendar';
-import Axios from '../config/axios.setup'
+import './Tutor.css';
+import { Descriptions, Tabs, Input, Button, Popover, Calendar } from 'antd';
+import { WriteComment } from '../components/Comment';
+import { PopoverDay } from '../components/PopoverDay';
+import { PopReserve } from '../components/PopReserve';
+import Axios from '../config/axios.setup';
 
 // === Tabs === //
 const { TabPane } = Tabs;
@@ -14,7 +15,7 @@ function callback(key) {
 class Tutor extends Component {
 
   state = {
-    // profile
+    // === profile === //
     username: '',
     telephone: '',
     image: '',
@@ -22,8 +23,12 @@ class Tutor extends Component {
     edus: [],
     awards: [],  
     changeImage: '',
+
+    // === calendar === //
+    schedules: [] // { id: ,date: ,timeRange: , price: }   
   }
 
+  // === Profile Function === //
   handleAddSkill = () => {
     this.setState(
       { skills: [...this.state.skills,{id:Math.round(Math.random()*1000)}] },
@@ -117,21 +122,116 @@ class Tutor extends Component {
     }  
   }
   
+  // === Calendar Function === //
+  dateCellRender = (moment) => {      
+
+    let handleAddSchedule = async (fromtime,totime,price) => {
+      try {
+        let id = Math.round(Math.random()*1000);
+        let result = await Axios.post('/addSchedule/'+id, {        
+        date: moment.format('L'),
+        timeRange: fromtime + '-' + totime,
+        price: price,
+        status: false
+      })
+        console.log(result.data)  
+
+        // === refresh === //
+        try {
+          let resultSchedule = await Axios.get('/getSchedule')
+          this.setState({ schedules: resultSchedule.data })
+        } catch (error) {
+          console.log(error)
+        }        
+
+      } catch (err) {
+        console.log(err)
+      }   
+    }
+
+    let filterScheduleDay = (schedules) => {
+      let result = schedules.filter(
+        schedule => schedule.date.slice(3,5) == moment.date()
+      )  
+      result = result.filter(
+        schedule => schedule.date.slice(0,2) == moment.month()+1
+      )
+      result = result.filter(
+        schedule => schedule.date.slice(6) == moment.year()
+      )
+      return result
+    }    
+
+    let handleDeleteSchedule = (targerId) => async () => {
+      try {
+        let result = await Axios.delete('/deleteSchedule/'+targerId)
+        console.log(result)
+
+        // === refresh === //
+        try {
+          let resultSchedule = await Axios.get('/getSchedule')
+          this.setState({ schedules: resultSchedule.data })
+        } catch (error) {
+          console.log(error)
+        }  
+
+      } catch (error) {
+        console.log(error)
+      }           
+    }
+
+    return (       
+      <div>        
+        <PopoverDay handleAddSchedule={handleAddSchedule} /> 
+        {filterScheduleDay(this.state.schedules).map( schedule => 
+          <PopReserve key={schedule.id}
+            schedule={schedule}      
+            handleDeleteSchedule={handleDeleteSchedule}      
+          />
+        )}             
+      </div>    
+    );
+  }
+
+  getMonthData = (value) => {
+    if (value.month() === 8) {
+      return 1394;
+    }
+  }
+  monthCellRender = (value) => {
+    const num = this.getMonthData(value);
+    return num ? (
+      <div className="notes-month">
+        <section>{num}</section>
+        <span>Backlog number</span>
+      </div>
+    ) : null;
+  }
+
+  // === Extra === //
+
   componentDidMount = async () => {
     try {
-      let result = await Axios.get('/getProfile')
-      console.log(result.data)
+      let resultProfile = await Axios.get('/getProfile')
+      console.log(resultProfile.data)
       this.setState({
-        username: result.data.username,
-        telephone: result.data.telephone,
-        image: result.data.image,
-        skills: result.data.skills,
-        edus: result.data.education,
-        awards: result.data.awards
+        username: resultProfile.data.username,
+        telephone: resultProfile.data.telephone,
+        image: resultProfile.data.image,
+        skills: resultProfile.data.skills,
+        edus: resultProfile.data.education,
+        awards: resultProfile.data.awards
       })
+
+      let resultSchedule = await Axios.get('/getSchedule')
+      // console.log(resultSchedule.data)
+      this.setState({
+        schedules: resultSchedule.data
+      })
+
     } catch (error) {
       console.log(error)
-    }    
+    }
   }
 
   render() {
@@ -245,7 +345,10 @@ class Tutor extends Component {
 
         </Tabs>        
             
-        <CreateCalendar />
+        <Calendar 
+            dateCellRender={this.dateCellRender} 
+            monthCellRender={this.monthCellRender} 
+        />         
         
       </div>
     );
