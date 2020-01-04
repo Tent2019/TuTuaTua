@@ -12,8 +12,6 @@ function callback(key) {
 } 
 
 // === Card === //
-const { Meta } = Card;
-
 class Student extends Component {
 
   state = {
@@ -167,7 +165,7 @@ class Student extends Component {
   componentDidMount = async () => {
     try {
       let resultProfile = await Axios.get('/getProfile')
-      console.log(resultProfile.data)
+      // console.log(resultProfile.data)
       this.setState({
         username: resultProfile.data.username,
         telephone: resultProfile.data.telephone,
