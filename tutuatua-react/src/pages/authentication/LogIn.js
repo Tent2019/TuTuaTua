@@ -17,6 +17,10 @@ class LogIn extends Component {
     this.props.history.push('/tutor')
   }
 
+  pushToStudent = () => {
+    this.props.history.push('/student')
+  }
+
   render() {
     return (
       <div id='container-login'>
@@ -31,6 +35,7 @@ class LogIn extends Component {
             <LogInForm 
               handleLinkSignUpForm={this.handleLinkSignUpForm} 
               pushToTutor={this.pushToTutor}
+              pushToStudent={this.pushToStudent}
             /> 
           }
         </div>

@@ -20,7 +20,7 @@
 }
 /* img-profile */
 #img-profile{
-    height: 200px;
+    height: 100%;
     margin: 0px auto 15px;
     border-radius: 50%;       
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import './LogInForm.css'
 import Axios from '../config/axios.setup'
 import { Form, Input, Button, notification, Icon  } from 'antd';
+import jwtDecode from 'jwt-decode'
 
 const successRegister = (succmsg) => {
   notification.open({
@@ -32,7 +33,11 @@ class RegistrationForm extends React.Component {
                 })
           localStorage.setItem('ACCESS_TOKEN', result.data.token)
           successRegister(result.data.message)
-        } catch (err) {                   
+          
+          let user =  jwtDecode(localStorage.getItem('ACCESS_TOKEN'))
+          user.role === 'tutor' ? this.props.pushToTutor() : this.props.pushToStudent()
+          
+        } catch (err) {                    
           failRegister(err.response.data.message)    
         }
       }
@@ -55,7 +60,6 @@ class RegistrationForm extends React.Component {
 
     const { 
       handleLinkSignUpForm, 
-      // pushToTutor 
     } = this.props
     
     return (      

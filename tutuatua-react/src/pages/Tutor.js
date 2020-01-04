@@ -210,6 +210,11 @@ class Tutor extends Component {
 
   // === Extra === //
 
+  handleLogOut = () => {
+    localStorage.removeItem('ACCESS_TOKEN')
+    this.props.history.push('/login')
+  }
+
   componentDidMount = async () => {
     try {
       let resultProfile = await Axios.get('/getProfile')
@@ -247,11 +252,13 @@ class Tutor extends Component {
                 value={this.state.changeImage} 
               />} 
               trigger="click"
-            >
+            > 
+              <div style={{height:'200px'}}>
               {this.state.image ?
                 <img id='img-profile' src={this.state.image} /> :
                 <div>Choose Image</div>
-              }     
+              }  
+              </div>                 
             </Popover>                  
                      
             <Descriptions
@@ -333,6 +340,7 @@ class Tutor extends Component {
             >
               Save
             </Button>   
+            <Button onClick={this.handleLogOut}>Log Out</Button>
 
           </TabPane>
 

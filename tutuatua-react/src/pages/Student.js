@@ -195,10 +195,12 @@ class Student extends Component {
               />} 
               trigger="click"
             >
-              {this.state.image ?
-                <img id='img-profile' src={this.state.image} /> :
-                <div>Choose Image</div>
-              }               
+              <div style={{height:'200px'}}>
+                {this.state.image ?
+                  <img id='img-profile' src={this.state.image} /> :
+                  <div>Choose Image</div>
+                }               
+              </div>
             </Popover>                  
                      
             <Descriptions
