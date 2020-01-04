@@ -5,7 +5,7 @@ import jwtDecode from 'jwt-decode'
 
 let user = jwtDecode(localStorage.getItem('ACCESS_TOKEN'))
 
-export class PopReserve extends Component {
+export class PopReserveStudent extends Component {
 
     confirm = (scheduleId) => () => {
         message.info('success');
@@ -13,14 +13,9 @@ export class PopReserve extends Component {
     }
 
     render() {
-        const {schedule, handleDeleteSchedule} = this.props
+        const {schedule} = this.props
         const text = <div>
-                        <b style={{color:'red'}}>Price: {schedule.price} Baht &nbsp;
-                            <i className="fas fa-trash"
-                                onClick={handleDeleteSchedule(schedule.id)}
-                                style={{visibility: user.role === 'student' ? 'hidden' : 'default'}}
-                            ></i>  
-                        </b>
+                        <b style={{color:'red'}}>Price: {schedule.price} Baht &nbsp; </b>
                         <div>Are you sure ?</div>                        
                     </div>        
         return (           
@@ -29,7 +24,7 @@ export class PopReserve extends Component {
                 onConfirm={this.confirm(schedule.id)} 
                 okText="Yes" 
                 cancelText="No"
-                disabled={schedule.status && user.role === 'student' ? true : false}
+                disabled={schedule.status ? true : false}
             >               
                 <Button id={schedule.id} className='confirm-button'
                     style={{ backgroundColor: schedule.status === false ? '#00ff99' : '#ff6666' }}                    

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './Student.css';
 import { Descriptions, Tabs, Input, Button, Popover, Calendar, Card } from 'antd';
-import { PopoverDay } from '../components/PopoverDay';
-import { PopReserve } from '../components/PopReserve';
+import { PopReserveStudent } from '../components/PopReserveStudent';
 import Axios from '../config/axios.setup';
 
 // === Tab === //
@@ -125,7 +124,7 @@ class Student extends Component {
     return (       
       <div>        
         {filterScheduleDay(this.state.schedules).map( schedule => 
-          <PopReserve key={schedule.id}
+          <PopReserveStudent key={schedule.id}
             schedule={schedule}      
             handleDeleteSchedule={handleDeleteSchedule}  
             handleReserveSchedule={handleReserveSchedule}    
@@ -196,12 +195,10 @@ class Student extends Component {
               />} 
               trigger="click"
             >
-              <div id='img-profile-tab1'>
-                {this.state.image ?
-                  <img id='img-profile' src={this.state.image} /> :
-                  <div>Choose Image</div>
-                }                
-              </div> 
+              {this.state.image ?
+                <img id='img-profile' src={this.state.image} /> :
+                <div>Choose Image</div>
+              }               
             </Popover>                  
                      
             <Descriptions

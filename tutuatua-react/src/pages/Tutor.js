@@ -3,7 +3,7 @@ import './Tutor.css';
 import { Descriptions, Tabs, Input, Button, Popover, Calendar } from 'antd';
 import { WriteComment } from '../components/Comment';
 import { PopoverDay } from '../components/PopoverDay';
-import { PopReserve } from '../components/PopReserve';
+import { PopReserveTutor } from '../components/PopReserveTutor';
 import Axios from '../config/axios.setup';
 
 // === Tabs === //
@@ -184,7 +184,7 @@ class Tutor extends Component {
       <div>        
         <PopoverDay handleAddSchedule={handleAddSchedule} /> 
         {filterScheduleDay(this.state.schedules).map( schedule => 
-          <PopReserve key={schedule.id}
+          <PopReserveTutor key={schedule.id}
             schedule={schedule}      
             handleDeleteSchedule={handleDeleteSchedule}      
           />
@@ -248,12 +248,10 @@ class Tutor extends Component {
               />} 
               trigger="click"
             >
-              <div id='img-profile-tab1'>
-                {this.state.image ?
-                  <img id='img-profile' src={this.state.image} /> :
-                  <div>Choose Image</div>
-                }                
-              </div> 
+              {this.state.image ?
+                <img id='img-profile' src={this.state.image} /> :
+                <div>Choose Image</div>
+              }     
             </Popover>                  
                      
             <Descriptions
