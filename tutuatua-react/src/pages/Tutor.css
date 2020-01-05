@@ -1,15 +1,18 @@
 #container-tutor{
+    border: 0px solid;
     display: grid;
     grid-template-columns: 35% 65%;
 }
 /* tabs */
 #tutor-left-tab{
-    text-align: center;
+    border: 0px solid;
+    text-align: center;    
 }
 .ant-tabs-no-animation{
-    border: 1px solid;
-    padding: 10px;
-    height: 540px;
+    border: 0px solid !important;
+    border-right: 0px solid !important;
+    height: 550px !important;
+    background-color: #f4f4f4;
 }
 .ant-tabs-nav-animated{
     width: 90% ;
@@ -19,9 +22,10 @@
     text-align: center;
 }
 /* img-profile */
-#img-profile{
+#img-profile-tutor{
     height: 100%;
     margin: 0px auto 15px;
+    border: 3px solid silver ;
     border-radius: 50%;       
 }
 /* description */
@@ -67,11 +71,12 @@ i{
 
 /* tag-calendar */
 .ant-fullcalendar-fullscreen{
-    border: 1px solid;
+    border: 0px solid !important;
+    height: 545px;
     overflow: scroll;
 }
 .ant-fullcalendar-calendar-body{
-    border: 0px solid;
+    border: 0px solid !important;
     width: 900px;
     height: 480px;    
 }
@@ -84,7 +89,5 @@ i{
     #skill-tag{
         height: 200px;
     }
-    #calendar{
-        height: 400px;
-    }
+   
 }

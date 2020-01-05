@@ -64,6 +64,10 @@ class RegistrationForm extends React.Component {
     
     return (      
       <div id='container-form'>
+
+        <i id='logo' class="fas fa-desktop"></i>
+        <b id='logo-text'>TuTuaTua Online</b>
+
         <Form id='form' {...formItemLayout} onSubmit={this.handleSubmit} >
           <Form.Item label="Username">
             {getFieldDecorator('username', {
@@ -83,7 +87,7 @@ class RegistrationForm extends React.Component {
             })(<Input.Password className='login-input' />)}
           </Form.Item>     
 
-          <Form.Item>
+          <Form.Item style={{marginTop:'30px'}}>
             <Button type="primary" ghost htmlType="submit">
               Login
             </Button>            
@@ -96,6 +100,7 @@ class RegistrationForm extends React.Component {
           </Form.Item>
 
         </Form>
+
       </div>      
     );
   }

@@ -9,7 +9,16 @@ import Student from './pages/Student';
 function App() {
   return (
     <div>
-      <div id='header'>Tutuatua</div>
+      <div id='header'>
+        <div>
+          <i className="fas fa-user-edit"></i>
+          <span id='brand'>TuTuaTua - Online</span>
+          <i className="fas fa-laptop"></i>
+        </div>
+        <div>
+           - &nbsp; Learn Anywhere, Anytime &nbsp; -  
+        </div>
+      </div>
       <div id='content'>
         <Switch>
           <Route exact path='/login' component={LogIn} />         
@@ -18,7 +27,14 @@ function App() {
           <Redirect to='/login' />
         </Switch>
       </div>    
-      <div id='footer'>footer</div>  
+      <div id='footer'>
+        <span></span>
+        <span>
+          <span>presented by </span>
+          <span><i className="fab fa-facebook"></i><span>Kittipong Tent</span></span>
+          <span><i className="fab fa-line"></i><span>tent.k</span></span>
+        </span>        
+      </div>  
     </div>
   );
 }

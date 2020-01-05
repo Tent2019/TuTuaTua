@@ -146,7 +146,7 @@ class RegistrationForm extends React.Component {
             </Select>)}
           </Form.Item>
 
-          <Form.Item>                         
+          <Form.Item style={{marginTop:'30px'}}>                         
             <Button type="primary" ghost htmlType="submit"
               style={{marginRight:'30px'}} 
             >

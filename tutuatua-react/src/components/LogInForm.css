@@ -1,14 +1,27 @@
 #container-form{
     border: 0px solid; 
+    background-color: #f4f4f4;
     height: 100%;
+
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center;   
+}
+
+#logo {
+    color: #373737;
+    font-size: 100px;
+    margin: 0px auto 10px;
+}
+#logo-text {
+    font-size: 20px;
+    margin: 0px auto;
 }
 
 #form {
     border: 0px solid;
     padding: 20px 40px;
+    margin-top: 20px;
     text-align: center;
 }
 
@@ -43,5 +56,9 @@
     .ant-select-selection--single{
         width: 100%;    
         margin-left: 0px;  
+    }
+    
+    #logo {
+        margin: 70px auto 10px;
     }
 }

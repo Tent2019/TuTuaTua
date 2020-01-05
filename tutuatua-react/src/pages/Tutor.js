@@ -263,14 +263,14 @@ class Tutor extends Component {
             > 
               <div style={{height:'200px', marginBottom:'15px'}}>
               {this.state.image ?
-                <img id='img-profile' src={this.state.image} /> :
+                <img id='img-profile-tutor' src={this.state.image} /> :
                 <div>Choose Image</div>
               }  
               </div>                 
             </Popover>                  
                      
             <Descriptions
-              title={`Teacher ${this.state.username}`}
+              title={`Teacher - ${this.state.username}`}
               bordered
               column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
               >
@@ -342,13 +342,16 @@ class Tutor extends Component {
                 </div>
               </Descriptions.Item>
             </Descriptions>
-
-            <Button style={{margin:'15px 0px 0px'}}
-              onClick={this.updateProfile}
+            
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center',
+                        marginTop:'20px'}}
             >
-              Save
-            </Button>   
-            <Button onClick={this.handleLogOut}>Logout</Button>
+              <Button onClick={this.updateProfile} >Save</Button>   
+              <Button onClick={this.handleLogOut}>
+                <i style={{fontSize:'15px'}} class="fas fa-sign-out-alt"></i>
+              </Button>
+            </div>
+            
                   
           </TabPane>
 
@@ -359,8 +362,10 @@ class Tutor extends Component {
               dataSource={this.state.comments}              
               renderItem={item => (                                              
                 <List.Item>         
-                  <List.Item.Meta                      
-                      avatar={<Avatar src={item.user.image} />}
+                  <img  style={{width:'50px',height:'50px', margin:'0px 20px 0px 10px'}} 
+                    src={item.user.image} 
+                  />
+                  <List.Item.Meta                                       
                       title={<b>{item.user.username}</b>}
                       description={item.text}
                     />
@@ -372,6 +377,7 @@ class Tutor extends Component {
         </Tabs>        
             
         <Calendar 
+            // style={{backgroundColor:'#e6ffff'}}
             dateCellRender={this.dateCellRender} 
             monthCellRender={this.monthCellRender} 
         />         

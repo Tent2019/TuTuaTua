@@ -288,14 +288,16 @@ class Student extends Component {
                 </div>
               </Descriptions.Item>  
 
-            </Descriptions>                   
+            </Descriptions>                
 
-            <Button style={{margin:'15px 0px 0px'}}
-              onClick={this.updateProfile}
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center',
+                        marginTop:'20px'}}
             >
-              Save
-            </Button>   
-            <Button onClick={this.handleLogOut}>Logout</Button>
+              <Button onClick={this.updateProfile} >Save</Button>   
+              <Button onClick={this.handleLogOut}>
+                <i style={{fontSize:'15px'}} class="fas fa-sign-out-alt"></i>
+              </Button>
+            </div>
 
           </TabPane>
 
@@ -358,8 +360,11 @@ class Student extends Component {
               dataSource={this.state.appointment}              
               renderItem={item => (                                              
                 <List.Item>         
+                  <img alt='' src={item.user.image}
+                    style={{height:'50px', width:'50px', margin:'0px 20px 0px 10px'}}
+                  />
                   <List.Item.Meta
-                    avatar={<Avatar src={item.user.image} />}
+                    // avatar={<Avatar src={item.user.image} />}
                     title={`Name: ${item.user.username} / Tel: ${item.user.telephone}`}
                     description={<div><div>Date -> {item.date}</div><div>Time -> {item.timeRange}</div></div>}
                   />

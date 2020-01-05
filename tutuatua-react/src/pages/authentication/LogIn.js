@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Carousel } from 'antd';
 import './LogIn.css'
 import { LogInForm } from '../../components/LogInForm'
 import SignUpForm from '../../components/SignUpForm';
@@ -24,10 +25,17 @@ class LogIn extends Component {
   render() {
     return (
       <div id='container-login'>
-        
-        <div id='frame-logo'>         
-         <img id='img-logo' src='images/why.jpeg' alt='' />
-        </div>
+
+        <div id='frame-logo'>
+          <Carousel autoplay>
+            <div className='pic-car'> <img alt='' src='https://image.freepik.com/free-vector/online-education-background_52683-7795.jpg' /> </div>
+            <div className='pic-car'> <img alt='' src='https://image.freepik.com/free-vector/online-education-background_52683-8091.jpg' /> </div>
+            <div className='pic-car'> <img alt='' src='https://image.freepik.com/free-vector/online-education-background_52683-7677.jpg' /> </div>
+          </Carousel>    
+          <div>
+
+          </div>
+        </div>    
 
         <div id='frame-login'>     
           {this.state.linkToSignUpForm ? 
