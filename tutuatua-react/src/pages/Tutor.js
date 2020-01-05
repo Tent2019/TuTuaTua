@@ -245,7 +245,7 @@ class Tutor extends Component {
         
         <Tabs onChange={callback} type="card" >
           {/* Tab 1 */}
-          <TabPane id='tutor-left-tab' tab="Tutor Profile" key="1">
+          <TabPane id='tutor-left-tab' tab="Profile" key="1">
 
             <Popover placement="right" title={'Image URL'} 
               content={<Input onChange={e => this.setState({ changeImage: e.target.value })}
@@ -253,7 +253,7 @@ class Tutor extends Component {
               />} 
               trigger="click"
             > 
-              <div style={{height:'200px'}}>
+              <div style={{height:'200px', marginBottom:'15px'}}>
               {this.state.image ?
                 <img id='img-profile' src={this.state.image} /> :
                 <div>Choose Image</div>
@@ -340,7 +340,7 @@ class Tutor extends Component {
             >
               Save
             </Button>   
-            <Button onClick={this.handleLogOut}>Log Out</Button>
+            <Button onClick={this.handleLogOut}>Logout</Button>
 
           </TabPane>
 

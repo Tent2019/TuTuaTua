@@ -1,14 +1,11 @@
 import React, {Component} from 'react';
 import { Popconfirm, message, Button } from 'antd';
 import './PopReserve.css'
-import jwtDecode from 'jwt-decode'
-
-let user = jwtDecode(localStorage.getItem('ACCESS_TOKEN'))
 
 export class PopReserveStudent extends Component {
 
     confirm = (scheduleId) => () => {
-        message.info('success');
+        message.info('Reserving Success');
         this.props.handleReserveSchedule(scheduleId,this.props.schedule.tutorId)   
     }
 

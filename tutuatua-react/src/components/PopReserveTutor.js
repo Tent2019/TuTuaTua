@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Popover, Button, Result } from 'antd';
+import { Popover, Button } from 'antd';
 import './PopReserve.css'
 import Axios from '../config/axios.setup';
 
@@ -36,7 +36,13 @@ export class PopReserveTutor extends Component {
                 <img style={{height:'100px',marginBottom:'10px'}} alt='' src={this.state.student.image}/>
                 <div><b>Name: </b>{this.state.student.username}</div>
                 <div><b>Telephone: </b>{this.state.student.telephone}</div>
-            </div> : 'waiting for booking ...' 
+                <div><b>Education: </b><br />
+                    { this.state.student ?
+                        this.state.student.education.map((edu,eduId) => <span key={eduId}>{edu.detail+' / '}</span>) : 
+                        undefined
+                    }
+                </div>
+            </div> : 'wait for booking ...' 
         return (           
             <Popover placement="right" trigger="click" 
                 title={text} 

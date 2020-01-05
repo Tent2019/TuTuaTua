@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import './Student.css';
-import { Descriptions, Tabs, Input, Button, Popover, Calendar, Card } from 'antd';
+import { Descriptions, Tabs, Input, Button, Popover, Calendar, Card, List, Avatar } from 'antd';
 import { PopReserveStudent } from '../components/PopReserveStudent';
 import Axios from '../config/axios.setup';
 
 // === Tab === //
 const { TabPane } = Tabs;
-function callback(key) {
-  // console.log(key);
-} 
 
 // === Card === //
 class Student extends Component {
@@ -21,9 +18,13 @@ class Student extends Component {
     edus: [],
     changeImage: '',
     tutors: [],
+    appointment: [],
 
     // === calendar === //
-    schedules: [] // { id: ,date: ,timeRange: , price: ,status:}   
+    schedules: [], // { id: ,date: ,timeRange: , price: ,status:}   
+
+    // === search === //
+    search: ''
   }
 
   // === Profile Function === //
@@ -116,6 +117,10 @@ class Student extends Component {
         // refresh
         let resultSchedule = await Axios.get('/getScheduleBySelectTutor/'+tutorId)
         this.setState({ schedules: resultSchedule.data })
+
+        let resultAppointment = await Axios.get('/getScheduleByStudentId')
+        this.setState({ appointment: resultAppointment.data })
+
       } catch (error) {
         console.log(error)
       }           
@@ -159,6 +164,13 @@ class Student extends Component {
     }    
   }
 
+  numberTab = (key) => {
+    // reset Calendar
+    if (key !== '2' ) {
+      this.setState({ schedules: [] })
+    }
+  } 
+
   // === @ Initiate === //
 
   componentDidMount = async () => {
@@ -176,18 +188,41 @@ class Student extends Component {
       // console.log(resultTutors.data)
       this.setState({ tutors: resultTutors.data })
 
+      let resultSchedule = await Axios.get('/getScheduleByStudentId')
+      console.log(resultSchedule.data)
+      this.setState({ appointment: resultSchedule.data })
+
     } catch (error) {
       console.log(error)
     }
   }
 
+  // === ETC === //
+
+  handleLogOut = () => {
+    localStorage.removeItem('ACCESS_TOKEN')
+    this.props.history.push('/login')
+  }
+
+  connectSkillandName = (objSkill,name) => {
+    let connectText = '';
+    for(let skill of objSkill) {
+      connectText += skill.detail.toLowerCase()+' '
+    }
+    return connectText+name.toLowerCase()
+  }
+
   render() {
+    let filterTutors =  this.state.tutors ? 
+      this.state.tutors.filter(tutor => 
+        this.connectSkillandName(tutor.skills,tutor.username).includes(this.state.search)
+      ): undefined
     return (
       <div id='container-student'> 
         
-        <Tabs onChange={callback} type="card" >
+        <Tabs onChange={this.numberTab} type="card" >
           {/* Tab 1 */}
-          <TabPane id='student-left-tab' tab="Student Profile" key="1">
+          <TabPane id='student-left-tab' tab="Profile" key="1">
 
             <Popover placement="right" title={'Image URL'} 
               content={<Input onChange={e => this.setState({ changeImage: e.target.value })}
@@ -195,7 +230,7 @@ class Student extends Component {
               />} 
               trigger="click"
             >
-              <div style={{height:'200px'}}>
+              <div style={{height:'200px', marginBottom:'15px'}}>
                 {this.state.image ?
                   <img id='img-profile' src={this.state.image} /> :
                   <div>Choose Image</div>
@@ -243,28 +278,74 @@ class Student extends Component {
             >
               Save
             </Button>   
+            <Button onClick={this.handleLogOut}>Logout</Button>
 
           </TabPane>
 
           {/* Tab 2 */}
-          <TabPane id='student-right-tab' tab="Select Tutor" key="2">
-            <div id='card-container'>
-              {this.state.tutors.map(tutor => 
+          <TabPane id='student-center-tab' tab="Select Tutor" key="2"
+            style={{textAlign:'center'}}
+          >
+            {/* search */}
+            <Input 
+              style={{width:'90%', margin:'0px 10px 20px'}}
+              placeholder='search by SKILL or NAME'
+              onChange={e => this.setState({ search: e.target.value })}
+            />
+            {/* tutors */}
+            <div id='card-container'
+              style={{border:'0px solid', height:'400px'}}
+            >
+              {filterTutors.map(tutor => 
                 <Card key={tutor.id}
-                  style={{ width: 140 }} 
+                  style={{ width: 140, border:'1px solid silver', marginBottom:'15px' }} 
                   cover={
                   <img alt="" src={tutor.image}
                     onClick={this.handleGetSchedule(tutor.id)}
                   />
                   }
                 >
-                  <b>{tutor.username}</b><br />
-                  {tutor.skills.map( (skill,skillId) => 
-                    <span key={skillId}>{skill.detail+' | '}</span>
-                  )}                  
+                  <div style={{height:'45px',overflow:'auto',textAlign:'left'}}>
+                    <b>Name: </b><span>{tutor.username}</span><br />
+                    <b>Tel: </b><span>{tutor.telephone}</span><br />
+                    <b>Skill: </b>
+                    {tutor.skills.map( (skill,skillId) => 
+                      <span key={skillId}>{skill.detail+' / '}</span>
+                    )}<br />   
+                    <b>Education: </b>
+                    {tutor.education.map( (edu,eduId) => 
+                      <span key={eduId}>{edu.detail+' / '}</span>
+                    )}<br />
+                    <b>Awards: </b>
+                    {tutor.awards.map( (award,awardId) => 
+                      <span key={awardId}>{award.detail+' / '}</span>
+                    )}<br />    
+                    <b>Comment: </b>
+                    <Input />
+                  </div>                              
                 </Card>                
               )}           
             </div>            
+          </TabPane>
+
+          {/* Tab 3 */}
+          <TabPane id='student-right-tab' tab="Schedule" key="3"
+            style={{overflow:'auto'}}
+          >
+            <List
+              itemLayout="horizontal"
+              dataSource={this.state.appointment}              
+              renderItem={item => (                                              
+                <List.Item>           
+                  {console.log(item)}
+                  <List.Item.Meta
+                    avatar={<Avatar src={item.user.image} />}
+                    title={`Name: ${item.user.username} / Tel: ${item.user.telephone}`}
+                    description={<div><div>Date -> {item.date}</div><div>Time -> {item.timeRange}</div></div>}
+                  />
+                </List.Item>
+              )}
+            />
           </TabPane>
 
         </Tabs>        
