@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './Tutor.css';
-import { Descriptions, Tabs, Input, Button, Popover, Calendar } from 'antd';
-import { WriteComment } from '../components/Comment';
+import { Descriptions, Tabs, Input, Button, Popover, Calendar, List, Avatar } from 'antd';
 import { PopoverDay } from '../components/PopoverDay';
 import { PopReserveTutor } from '../components/PopReserveTutor';
 import Axios from '../config/axios.setup';
@@ -25,7 +24,10 @@ class Tutor extends Component {
     changeImage: '',
 
     // === calendar === //
-    schedules: [] // { id: ,date: ,timeRange: , price: }   
+    schedules: [], // { id: ,date: ,timeRange: , price: }   
+
+    // === comment === //
+    comments: []
   }
 
   // === Profile Function === //
@@ -134,7 +136,7 @@ class Tutor extends Component {
         price: price,
         status: false
       })
-        console.log(result.data)  
+        // console.log(result.data)  
 
         // === refresh === //
         try {
@@ -232,6 +234,12 @@ class Tutor extends Component {
       // console.log(resultSchedule.data)
       this.setState({
         schedules: resultSchedule.data
+      })
+
+      let resultComment = await Axios.get('/getComment')
+      // console.log(resultComment.data)
+      this.setState({
+        comments: resultComment.data
       })
 
     } catch (error) {
@@ -341,12 +349,24 @@ class Tutor extends Component {
               Save
             </Button>   
             <Button onClick={this.handleLogOut}>Logout</Button>
-
+                  
           </TabPane>
 
           {/* Tab 2 */}
-          <TabPane tab="Comment" key="2">
-            <WriteComment  style={{overflow:'auto'}} />                                    
+          <TabPane tab="Comment" key="2">    
+            <List
+              itemLayout="horizontal"
+              dataSource={this.state.comments}              
+              renderItem={item => (                                              
+                <List.Item>         
+                  <List.Item.Meta                      
+                      avatar={<Avatar src={item.user.image} />}
+                      title={<b>{item.user.username}</b>}
+                      description={item.text}
+                    />
+                </List.Item>
+              )}
+            />                   
           </TabPane>
 
         </Tabs>        

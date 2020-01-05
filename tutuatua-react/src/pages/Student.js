@@ -24,7 +24,10 @@ class Student extends Component {
     schedules: [], // { id: ,date: ,timeRange: , price: ,status:}   
 
     // === search === //
-    search: ''
+    search: '',
+
+    // === comment === //
+    comment: '',
   }
 
   // === Profile Function === //
@@ -189,7 +192,7 @@ class Student extends Component {
       this.setState({ tutors: resultTutors.data })
 
       let resultSchedule = await Axios.get('/getScheduleByStudentId')
-      console.log(resultSchedule.data)
+      // console.log(resultSchedule.data)
       this.setState({ appointment: resultSchedule.data })
 
     } catch (error) {
@@ -210,6 +213,20 @@ class Student extends Component {
       connectText += skill.detail.toLowerCase()+' '
     }
     return connectText+name.toLowerCase()
+  }
+
+  handleComment = (tutorId) => async (e) => {
+    if (e.key === 'Enter') {
+      try {
+        let result = await Axios.post('/createComment/'+tutorId,{
+          text: this.state.comment
+        }) 
+        // console.log(result.data)ฝ
+        this.setState({ comment: '' })
+      } catch (error) {
+        console.log(error)
+      }      
+    }    
   }
 
   render() {
@@ -321,7 +338,11 @@ class Student extends Component {
                       <span key={awardId}>{award.detail+' / '}</span>
                     )}<br />    
                     <b>Comment: </b>
-                    <Input />
+                    <Input 
+                      onChange={e => this.setState({ comment: e.target.value })}
+                      onKeyUp={this.handleComment(tutor.id)}
+                      value={this.state.comment}
+                    />
                   </div>                              
                 </Card>                
               )}           
@@ -336,8 +357,7 @@ class Student extends Component {
               itemLayout="horizontal"
               dataSource={this.state.appointment}              
               renderItem={item => (                                              
-                <List.Item>           
-                  {console.log(item)}
+                <List.Item>         
                   <List.Item.Meta
                     avatar={<Avatar src={item.user.image} />}
                     title={`Name: ${item.user.username} / Tel: ${item.user.telephone}`}
