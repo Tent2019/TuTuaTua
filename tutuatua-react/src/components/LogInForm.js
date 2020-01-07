@@ -1,8 +1,10 @@
 import React from 'react';
 import './LogInForm.css'
-import Axios from '../config/axios.setup'
+import Axios from '../config/api.service'
 import { Form, Input, Button, notification, Icon  } from 'antd';
 import jwtDecode from 'jwt-decode'
+import {login} from '../redux/actions/actions'
+import {connect} from 'react-redux'
 
 const successRegister = (succmsg) => {
   notification.open({
@@ -31,12 +33,20 @@ class RegistrationForm extends React.Component {
                   username: values.username, 
                   password: values.password
                 })
-          localStorage.setItem('ACCESS_TOKEN', result.data.token)
+          // console.log(result.data)
+
+          // === before -> no redux === //      
+          // localStorage.setItem('ACCESS_TOKEN', result.data.token)
+          //  let user =  jwtDecode(localStorage.getItem('ACCESS_TOKEN'))         
+          
+          // === REDUX === //
+          let user = jwtDecode(result.data.token)
+          // console.log(user)
+          this.props.login(user, result.data.token)
+          let role = this.props.user.role
+          role === 'tutor' ? this.props.pushToTutor() : this.props.pushToStudent()
+
           successRegister(result.data.message)
-          
-          let user =  jwtDecode(localStorage.getItem('ACCESS_TOKEN'))
-          user.role === 'tutor' ? this.props.pushToTutor() : this.props.pushToStudent()
-          
         } catch (err) {                    
           failRegister(err.response.data.message)    
         }
@@ -44,8 +54,7 @@ class RegistrationForm extends React.Component {
     });
   };
 
-  render() {
-    
+  render() {    
     const { getFieldDecorator } = this.props.form;    
     const formItemLayout = {
       labelCol: {
@@ -65,7 +74,7 @@ class RegistrationForm extends React.Component {
     return (      
       <div id='container-form'>
 
-        <i id='logo' class="fas fa-desktop"></i>
+        <i id='logo' className="fas fa-desktop"></i>
         <b id='logo-text'>TuTuaTua Online</b>
 
         <Form id='form' {...formItemLayout} onSubmit={this.handleSubmit} >
@@ -106,4 +115,14 @@ class RegistrationForm extends React.Component {
   }
 }
 
-export const LogInForm = Form.create({ name: 'register' })(RegistrationForm);
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+const mapDispatchToProps = {
+  login: login
+}
+
+const LogInForm = Form.create({ name: 'register' })(RegistrationForm);
+export default connect(mapStateToProps,mapDispatchToProps)(LogInForm)

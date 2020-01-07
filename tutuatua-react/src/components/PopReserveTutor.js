@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Popover, Button } from 'antd';
 import './PopReserve.css'
-import Axios from '../config/axios.setup';
+import Axios from '../config/api.service';
 
 export class PopReserveTutor extends Component {
 

@@ -1,8 +1,6 @@
 import React from 'react';
 import './SignUpForm.css'
-import { connect } from 'react-redux'
-import { addUser } from '../redux/actions/actions';
-import Axios from '../config/axios.setup'
+import Axios from '../config/api.service'
 // === test - store === //
 // import store from '../redux/store/store'
 // ==================== //
@@ -164,9 +162,4 @@ class RegistrationForm extends React.Component {
   }
 }
 
-const mapDispatchToProps = {
-  addUser: addUser
-}
-
-const SignUpForm = Form.create({ name: 'register' })(RegistrationForm);
-export default connect(null, mapDispatchToProps)(SignUpForm)
+export const SignUpForm = Form.create({ name: 'register' })(RegistrationForm);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Student.css';
 import { Descriptions, Tabs, Input, Button, Popover, Calendar, Card, List, Avatar } from 'antd';
 import { PopReserveStudent } from '../components/PopReserveStudent';
-import Axios from '../config/axios.setup';
+import Axios from '../config/api.service';
 
 // === Tab === //
 const { TabPane } = Tabs;

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Carousel } from 'antd';
 import './LogIn.css'
-import { LogInForm } from '../../components/LogInForm'
-import SignUpForm from '../../components/SignUpForm';
+import LogInForm from '../../components/LogInForm'
+import { SignUpForm } from '../../components/SignUpForm';
 
 class LogIn extends Component {
 

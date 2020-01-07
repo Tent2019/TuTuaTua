@@ -3,7 +3,7 @@ import './Tutor.css';
 import { Descriptions, Tabs, Input, Button, Popover, Calendar, List, Avatar } from 'antd';
 import { PopoverDay } from '../components/PopoverDay';
 import { PopReserveTutor } from '../components/PopReserveTutor';
-import Axios from '../config/axios.setup';
+import Axios from '../config/api.service';
 
 // === Tabs === //
 const { TabPane } = Tabs;
@@ -348,7 +348,7 @@ class Tutor extends Component {
             >
               <Button onClick={this.updateProfile} >Save</Button>   
               <Button onClick={this.handleLogOut}>
-                <i style={{fontSize:'15px'}} class="fas fa-sign-out-alt"></i>
+                <i style={{fontSize:'15px'}} className="fas fa-sign-out-alt"></i>
               </Button>
             </div>
             
