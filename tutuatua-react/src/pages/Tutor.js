@@ -4,6 +4,8 @@ import { Descriptions, Tabs, Input, Button, Popover, Calendar, List, Avatar } fr
 import { PopoverDay } from '../components/PopoverDay';
 import { PopReserveTutor } from '../components/PopReserveTutor';
 import Axios from '../config/api.service';
+import { logout } from '../redux/actions/actions'
+import { connect } from 'react-redux'
 
 // === Tabs === //
 const { TabPane } = Tabs;
@@ -213,8 +215,13 @@ class Tutor extends Component {
   // === Extra === //
 
   handleLogOut = () => {
-    localStorage.removeItem('ACCESS_TOKEN')
+    // * no Redux
+    // localStorage.removeItem('ACCESS_TOKEN')
+    // this.props.history.push('/login')
+
+    this.props.logout()
     this.props.history.push('/login')
+    window.location.reload(true)
   }
 
   componentDidMount = async () => {
@@ -247,7 +254,7 @@ class Tutor extends Component {
     }
   }
 
-  render() {
+  render() { 
     return (
       <div id='container-tutor'> 
         
@@ -387,5 +394,9 @@ class Tutor extends Component {
   }
 }
 
-export default Tutor;
+const mapDispatchToProps = {
+  logout: logout
+}
+
+export default connect(null,mapDispatchToProps)(Tutor);
 

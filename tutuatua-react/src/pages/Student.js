@@ -3,6 +3,8 @@ import './Student.css';
 import { Descriptions, Tabs, Input, Button, Popover, Calendar, Card, List, Avatar } from 'antd';
 import { PopReserveStudent } from '../components/PopReserveStudent';
 import Axios from '../config/api.service';
+import { logout } from '../redux/actions/actions'
+import { connect } from 'react-redux'
 
 // === Tab === //
 const { TabPane } = Tabs;
@@ -203,8 +205,12 @@ class Student extends Component {
   // === ETC === //
 
   handleLogOut = () => {
-    localStorage.removeItem('ACCESS_TOKEN')
+    // localStorage.removeItem('ACCESS_TOKEN')
+    // this.props.history.push('/login')
+
+    this.props.logout()
     this.props.history.push('/login')
+    window.location.reload(true)
   }
 
   connectSkillandName = (objSkill,name) => {
@@ -295,7 +301,7 @@ class Student extends Component {
             >
               <Button onClick={this.updateProfile} >Save</Button>   
               <Button onClick={this.handleLogOut}>
-                <i style={{fontSize:'15px'}} class="fas fa-sign-out-alt"></i>
+                <i style={{fontSize:'15px'}} className="fas fa-sign-out-alt"></i>
               </Button>
             </div>
 
@@ -385,4 +391,8 @@ class Student extends Component {
   }
 }
 
-export default Student;
+const mapDispatchToProps = {
+  logout: logout
+}
+
+export default connect(null,mapDispatchToProps)(Student);

@@ -44,7 +44,9 @@ class RegistrationForm extends React.Component {
           // console.log(user)
           this.props.login(user, result.data.token)
           let role = this.props.user.role
+          console.log(role)
           role === 'tutor' ? this.props.pushToTutor() : this.props.pushToStudent()
+          window.location.reload(true);
 
           successRegister(result.data.message)
         } catch (err) {                    

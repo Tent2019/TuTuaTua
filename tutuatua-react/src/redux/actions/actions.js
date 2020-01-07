@@ -3,13 +3,6 @@ import { TOKEN } from '../../config/constants'
 export const LOGIN_USER = 'LOGIN_USER'
 export const LOGOUT_USER = 'LOGOUT_USER'
 
-export function logoutUser() {
-    localStorage.removeItem(TOKEN)
-    return{
-        type: LOGOUT_USER
-    }
-}
-
 function fetchLogin(token) {
     localStorage.setItem(TOKEN, token)
 }
